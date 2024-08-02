@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package spotify.player.proto;
+
+option optimize_for = CODE_SIZE;
+
+message Suppressions {
+    repeated string providers = 1;
+}

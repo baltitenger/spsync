@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package spotify.playlist.signal.proto;
+
+option java_outer_classname = "SignalModelProto";
+option java_package = "com.spotify.playlist_signal.model.proto";
+
+message Signal {
+    string identifier = 1;
+    bytes data = 2;
+    bytes client_payload = 3;
+}

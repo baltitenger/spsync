@@ -1,0 +1,234 @@
+accounts.spotify.com oauth something -> redirect_uri=http://127.0.0.1:4381/login
+-> browser stuff -> /en/oauth2/v2/auth/accept?ajax_redirect=1
+-> client gets login code -> https://accounts.spotify.com/api/token -> gets real access token
+{
+    "access_token": "string",
+    "expires_in": int seconds,
+    "refresh_token": "string",
+    "scope": "playlist-modify ugc-image-upload user-follow-read user-read-email user-read-private app-remote-control streaming user-follow-modify user-modify-playback-state user-library-modify
+playlist-modify-public playlist-read user-read-birthdate user-top-read playlist-read-private playlist-read-collaborative user-modify-private playlist-modify-private user-modify
+user-library-read user-personalized user-read-play-history user-read-playback-state user-read-currently-playing user-read-recently-played user-read-playback-position",
+    "token_type": "Bearer",
+    "username": "string"
+}
+
+POST https://login5.spotify.com/v3/login using LoginRequest, StoredCredential -> LoginResponse
+
+api endpoint: https://spclient.wg.spotify.com
+
+GET /playlist/v2/user/{user}/rootlist?decorate=revision,attributes,length,owner,capabilities&from=0&length=120 -> SelectedListContent
+
+GET /recently-played/v3/user/{user}/recently-played?limit=50&filter=default,track,collection-new-episodes -> idk, something like PageResponse but 1.3 is a track uri
+
+GET /social-connect/v2/sessions/current?alt=protobuf 404 if no sessions? -> TODO
+
+GET /played-state/v1/items?fromTimestamp=0 -> something about played episodes
+
+GET /lfs-secret-provider/v1/secret -> GetSecretResponse not sure what this is (20 bytes)
+
+PUT /offline/v1/devices/{device_id.hex()}/cache/{cache_id?} <- something containing offline.Device at 1
+can also POST with no data
+GET -> idk 2.1 ts 2.2=500000000
+
+
+POST /gabo-receiver-service/v3/events <- gabito.PublishEventsRequest json or not
+POST /gabo-receiver-service/public/v3/events <- gabito.PublishEventsRequest json
+- all kinds of events in package spotify.event_sender.proto
+- i hope PlaybackSegments is enough for play tracking
+
+PUT /presence2/publish/user/{user} <- proto: 6: { 1: track_uri, 2: context_uri, 4: idk "your_library", 5: idk 0 }
+
+commands:
+{
+  "message_id": 1502988030,
+  "target_alias_id": null,
+  "sent_by_device_id": "{device_id}",
+  "command": {
+		"endpoint": "{endpoint}",
+		... mixins ... --> from es_*_request.proto
+		"logging_params": {
+			"device_identifier": "{device_id}",
+			"command_initiated_time"?: 1715200888719,
+			"command_received_time"?: 1715200888720,
+			"command_id"?: "97ac74188e02901c18709a793742c9a0"
+			"interaction_ids"?: [
+				"ac038015-23fd-4158-9c12-1aca8d5a4c0e"
+			],
+		}
+		"options": {
+			"override_restrictions": false,
+			"only_for_local_device": false,
+			"system_initiated": false
+			"allow_seeking"?: true
+		},
+
+	}
+}
+
+
+"endpoint": "set_queue",
+"queue_revision": "10951286204398185255",
+"prev_tracks": [
+	{
+		"uri": "spotify:track:5FVd6KXrgO9B3JPmC8OPst",
+		"uid": "4ce835e153ce2217",
+		"metadata": {
+			"actions.skipping_next_past_track": "resume" | "pause",
+			"actions.skipping_prev_past_track": "resume" | "pause",
+			"album_artist_name": "Arctic Monkeys",
+			"album_title": "AM",
+			"album_uri": "spotify:album:78bpIziExqiI9qztvNFlQu",
+			"artist_name": "Arctic Monkeys",
+			"artist_uri": "spotify:artist:7Ln80lUS6He07XvHI8qqHH",
+			"collection.can_add": "true",
+			"collection.can_ban": "true",
+			"collection.in_collection": "true",
+			"collection.is_banned": "false",
+			"context_uri": "spotify:playlist:4R5fHGOsWNZ2HHoHhzZbMn",
+			"duration": "272000",
+			"entity_uri": "spotify:playlist:4R5fHGOsWNZ2HHoHhzZbMn",
+			"extracted_color": "535353",
+			"has_lyrics": "true",
+			"image_large_url": "spotify:image:ab67616d0000b2734ae1c4c5c45aabe565499163",
+			"image_small_url": "spotify:image:ab67616d000048514ae1c4c5c45aabe565499163",
+			"image_url": "spotify:image:ab67616d00001e024ae1c4c5c45aabe565499163",
+			"image_xlarge_url": "spotify:image:ab67616d0000b2734ae1c4c5c45aabe565499163",
+			"interaction_id": "8a82b1f1-db95-4712-bf0e-e3dc25e2a3b6",
+			"is_queued": "true",
+			"iteration": "0",
+			"marked_for_download": "true",
+			"page_instance_id": "36836cb1-c963-4ebd-b4b5-579455434140",
+			"title": "Do I Wanna Know?",
+			"track_player": "audio"
+		},
+		"provider": "context"
+	},
+],
+"next_tracks": [
+	{
+		"uri": "spotify:track:3jdo9L1HZ17JJ3TTWq0v6R",
+		"metadata": {
+			"is_queued": "true"
+		}
+	},
+	{
+		"uri": "spotify:track:1zCNzZTRsou6TFpe8nsmnK",
+		"uid": "q3",
+		"metadata": {
+			"actions.skipping_next_past_track": "resume",
+			"actions.skipping_prev_past_track": "resume",
+			"album_artist_name": "The Black Keys",
+			"album_title": "Ohio Players",
+			"album_uri": "spotify:album:4Tdem6pnui14BlWLCB4VrI",
+			"artist_name": "The Black Keys",
+			"artist_uri": "spotify:artist:7mnBLXK823vNxN3UWB7Gfz",
+			"canvas.artist.avatar": "https://open.spotify.com/image/ab6761610000f17862526d21ffdce8d9b6e093e6",
+			"canvas.artist.name": "The Black Keys",
+			"canvas.artist.uri": "spotify:artist:7mnBLXK823vNxN3UWB7Gfz",
+			"canvas.canvasUri": "spotify:canvas:3WpFfraNA3tXQNnjTPlNgI",
+			"canvas.entityUri": "spotify:track:1zCNzZTRsou6TFpe8nsmnK",
+			"canvas.explicit": "false",
+			"canvas.fileId": "",
+			"canvas.id": "8186e9910e814f25b18dc97d47d8a8b8",
+			"canvas.type": "VIDEO_LOOPING_RANDOM",
+			"canvas.uploadedBy": "artist",
+			"canvas.url": "https://canvaz.scdn.co/upload/licensor/3ZBqv9LoqAZkFanJh73zcz/video/7e90ddd98d7a4ad799a8611369acf7ef.cnvs.mp4",
+			"collection.can_add": "true",
+			"collection.can_ban": "true",
+			"collection.in_collection": "false",
+			"collection.is_banned": "false",
+			"duration": "155000",
+			"extracted_color": "c03030",
+			"has_lyrics": "true",
+			"image_large_url": "spotify:image:ab67616d0000b2739be22a3e8e1bc7d8bc643d07",
+			"image_small_url": "spotify:image:ab67616d000048519be22a3e8e1bc7d8bc643d07",
+			"image_url": "spotify:image:ab67616d00001e029be22a3e8e1bc7d8bc643d07",
+			"image_xlarge_url": "spotify:image:ab67616d0000b2739be22a3e8e1bc7d8bc643d07",
+			"is_queued": "false",
+			"marked_for_download": "true",
+			"queued_by": "21r7t3btdc365ydckxjr54pwq",
+			"title": "Don't Let Me Go",
+			"track_player": "audio"
+		},
+		"provider": "queue"
+	},
+	{
+		"uri": "spotify:delimiter",
+		"uid": "delimiter0",
+		"metadata": {
+			"actions.advancing_past_track": "pause",
+			"actions.skipping_next_past_track": "pause",
+			"hidden": "true",
+			"interaction_id": "8a82b1f1-db95-4712-bf0e-e3dc25e2a3b6",
+			"iteration": "0",
+			"page_instance_id": "36836cb1-c963-4ebd-b4b5-579455434140"
+		},
+		"provider": "context"
+	},
+],
+
+
+"endpoint": "add_to_queue",
+"track": {
+	"uri": "spotify:track:1zCNzZTRsou6TFpe8nsmnK"
+},
+
+
+"endpoint": "update_context",
+"session_id": "1OEqSPxOGczMhKbRIh8P9E",
+"context": {
+	"uri": "spotify:playlist:4R5fHGOsWNZ2HHoHhzZbMn",
+	"url": "context://spotify:playlist:4R5fHGOsWNZ2HHoHhzZbMn",
+	"restrictions": {}
+}
+
+"endpoint": "update_context",
+"session_id": "1OEqSPxOGczMhKbRIh8P9E",
+"context": {
+	"uri": "spotify:playlist:4R5fHGOsWNZ2HHoHhzZbMn",
+	"url": "context://spotify:playlist:4R5fHGOsWNZ2HHoHhzZbMn?spotify-apply-lenses=enhance",
+	"restrictions": {}
+}
+
+"endpoint": "update_context",
+"session_id": "1OEqSPxOGczMhKbRIh8P9E",
+"context": {
+	"uri": "spotify:playlist:4R5fHGOsWNZ2HHoHhzZbMn",
+	"url": "context://spotify:playlist:4R5fHGOsWNZ2HHoHhzZbMn",
+	"metadata": {
+		"enhanced_context": ""
+	},
+	"restrictions": {}
+}
+
+
+"endpoint": "pause",
+
+
+"endpoint": "resume",
+
+
+"endpoint": "skip_prev",
+
+
+"endpoint": "skip_next",
+
+
+"endpoint": "set_shuffling_context",
+"value": true | false,
+
+
+"endpoint": "set_options",
+"repeating_track": true | false,
+"repeating_context": true | false,
+
+
+
+
+
+hm://connect-state/v1/connect/volume
+-> spotify.connectstate.SetVolumeCommand
+
+PUT /connect-state/v1/connect/volume/from/98ab7525692abc3ca81757f8a4c37cc21a03c0a6/to/144a9d3f20a55fb7c6bd6329a11c4e5e0af3d986 <- spotify.connectstate.SetVolumeCommand
+
+fuck esperanto, all my homies hate esperanto

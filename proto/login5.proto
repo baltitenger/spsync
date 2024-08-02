@@ -1,0 +1,163 @@
+syntax = "proto3";
+
+package login5;
+
+// import "spotify/login5/v3/client_info.proto";
+message ClientInfo {
+    string client_id = 1;
+    string device_id = 2;
+}
+
+// import "spotify/login5/v3/user_info.proto";
+message UserInfo {
+    enum Gender {
+        UNKNOWN = 0;
+        MALE = 1;
+        FEMALE = 2;
+        NEUTRAL = 3;
+    }
+    string name = 1;
+    string email = 2;
+    bool email_verified = 3;
+    string birthdate = 4;
+    Gender gender = 5;
+    string phone_number = 6;
+    bool phone_number_verified = 7;
+    bool email_already_registered = 8;
+}
+
+// import "spotify/login5/v3/challenges/code.proto";
+message CodeChallenge {
+    enum Method {
+        UNKNOWN = 0;
+        SMS = 1;
+    }
+    Method method = 1;
+    int32 code_length = 2;
+    int32 expires_in = 3;
+    string canonical_phone_number = 4;
+}
+
+message CodeSolution {
+    string code = 1;
+}
+
+// import "spotify/login5/v3/challenges/hashcash.proto";
+import "duration.proto";
+
+message HashcashChallenge {
+    bytes prefix = 1;
+    int32 length = 2;
+}
+
+message HashcashSolution {
+    bytes suffix = 1;
+    .google.protobuf.Duration duration = 2;
+}
+
+// import "spotify/login5/v3/credentials/credentials.proto";
+message StoredCredential {
+	string username = 1;
+	bytes data = 2;
+}
+
+message Password {
+	string id = 1;
+	string password = 2;
+	bytes padding = 3;
+}
+
+message FacebookAccessToken {
+	string fb_uid = 1;
+	string access_token = 2;
+}
+
+message OneTimeToken {
+	string token = 1;
+}
+
+message ParentChildCredential {
+	string child_id = 1;
+	StoredCredential parent_stored_credential = 2;
+}
+
+message AppleSignInCredential {
+	string auth_code = 1;
+	string redirect_uri = 2;
+	string bundle_id = 3;
+}
+
+// import "spotify/login5/v3/identifiers/identifiers.proto";
+message PhoneNumber {
+    string number = 1;
+    string iso_country_code = 2;
+    string country_calling_code = 3;
+}
+
+// main file
+
+enum LoginError {
+    UNKNOWN_ERROR = 0;
+    INVALID_CREDENTIALS = 1;
+    BAD_REQUEST = 2;
+    UNSUPPORTED_LOGIN_PROTOCOL = 3;
+    TIMEOUT = 4;
+    UNKNOWN_IDENTIFIER = 5;
+    TOO_MANY_ATTEMPTS = 6;
+    INVALID_PHONENUMBER = 7;
+    TRY_AGAIN_LATER = 8;
+}
+
+message Challenges {
+    repeated Challenge challenges = 1;
+}
+
+message Challenge {
+    HashcashChallenge hashcash = 1;
+    CodeChallenge code = 2;
+}
+
+message ChallengeSolutions {
+    repeated ChallengeSolution solutions = 1;
+}
+
+message ChallengeSolution {
+    HashcashSolution hashcash = 1;
+    CodeSolution code = 2;
+}
+
+message LoginRequest {
+    ClientInfo client_info = 1;
+    bytes login_context = 2;
+    ChallengeSolutions challenge_solutions = 3;
+    oneof login_info {
+        StoredCredential stored_credential = 100;
+        Password password = 101;
+        FacebookAccessToken facebook_access_token = 102;
+        PhoneNumber phone_number = 103;
+        OneTimeToken one_time_token = 104;
+        ParentChildCredential parent_child_credential = 105;
+        AppleSignInCredential apple_sign_in_credential = 106;
+    }
+}
+
+message LoginOk {
+    string username = 1;
+    string access_token = 2;
+    bytes stored_credential = 3;
+    int32 access_token_expires_in = 4;
+}
+
+message LoginResponse {
+    enum Warnings {
+        UNKNOWN_WARNING = 0;
+        DEPRECATED_PROTOCOL_VERSION = 1;
+    }
+    LoginOk ok = 1;
+    LoginError error = 2;
+    Challenges challenges = 3;
+    repeated Warnings warnings = 4;
+    bytes login_context = 5;
+    string identifier_token = 6;
+    UserInfo user_info = 7;
+}

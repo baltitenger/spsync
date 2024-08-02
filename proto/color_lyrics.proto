@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+message ColorLyrics {
+	Lyrics lyrics = 1;
+	Colors colors = 2;
+	bool hasVocalRemoval = 3; // guess
+}
+
+message Lyrics {
+	SyncType syncType = 1;
+	repeated Line lines = 2;
+	string provider = 3;
+	string providerLyricsId = 4;
+	string providerDisplayName = 5;
+	string syncLyricsUri = 6; // guess
+	string isDenseTypeface = 7; // guess
+	repeated bytes alternatives = 8; // guess
+	string language = 10;
+	bool isRtlLanguage = 11; // guess
+	FullscreenAction fullscreenAction = 12; // guess
+}
+
+enum SyncType {
+	UNSYNCED = 0; // guess
+	LINE_SYNCED = 1;
+};
+
+message Line {
+	uint32 startTimeMs = 1;
+	string words = 2;
+	repeated string syllables = 3; // guess
+	uint32 endTimeMs = 4; // guess
+}
+
+enum FullscreenAction {
+	FULLSCREEN_LYRICS = 0;
+}
+
+message Colors {
+	uint64 background = 1;
+	uint64 text = 2;
+	uint64 highlight = 3;
+}

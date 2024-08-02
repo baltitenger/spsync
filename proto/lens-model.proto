@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package spotify.lens.model.proto;
+
+option java_outer_classname = "LensModelProto";
+option java_package = "com.spotify.lens.model.proto";
+
+message Lens {
+    string identifier = 1;
+}
+
+message LensState {
+    string identifier = 1;
+    bytes revision = 2;
+}
